@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Check, X, Calendar, Trash2, Target, Flame } from 'lucide-react';
 
+interface Habit {
+  id: number;
+  name: string;
+  streak: number;
+  completions: Record<string, boolean>;
+}
+
+
 const HabitBuilder = () => {
-  const [habits, setHabits] = useState([]);
-  const [newHabitName, setNewHabitName] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [newHabitName, setNewHabitName] = useState<string>('');
+  const [showAddForm, setShowAddForm] = useState<boolean>(false);
 
   // Initialize with sample data if no habits exist
   useEffect(() => {
@@ -53,36 +61,36 @@ const HabitBuilder = () => {
     }
   };
 
-  const deleteHabit = (id) => {
-    setHabits(habits.filter(habit => habit.id !== id));
-  };
+  const deleteHabit = (id: number) => {
+  setHabits(habits.filter(habit => habit.id !== id));
+};
 
-  const toggleHabitCompletion = (id, date) => {
-    setHabits(habits.map(habit => {
-      if (habit.id === id) {
-        const updatedCompletions = { ...habit.completions };
-        const wasCompleted = updatedCompletions[date];
-        updatedCompletions[date] = !wasCompleted;
-        
-        // Recalculate streak
-        const today = new Date().toISOString().split('T')[0];
-        let streak = 0;
-        let currentDate = new Date(today);
-        
-        while (updatedCompletions[currentDate.toISOString().split('T')[0]]) {
-          streak++;
-          currentDate.setDate(currentDate.getDate() - 1);
-        }
-        
-        return {
-          ...habit,
-          completions: updatedCompletions,
-          streak: streak
-        };
+const toggleHabitCompletion = (id: number, date: string) => {
+  setHabits(habits.map(habit => {
+    if (habit.id === id) {
+      const updatedCompletions = { ...habit.completions };
+      const wasCompleted = updatedCompletions[date];
+      updatedCompletions[date] = !wasCompleted;
+
+      // Recalculate streak
+      const today = new Date().toISOString().split('T')[0];
+      let streak = 0;
+      let currentDate = new Date(today);
+
+      while (updatedCompletions[currentDate.toISOString().split('T')[0]]) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
       }
-      return habit;
-    }));
-  };
+
+      return {
+        ...habit,
+        completions: updatedCompletions,
+        streak
+      };
+    }
+    return habit;
+  }));
+};
 
   const getDateString = (daysBack = 0) => {
     const date = new Date();
@@ -98,12 +106,12 @@ const HabitBuilder = () => {
     return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   };
 
-  const getCompletionRate = (habit) => {
-    const completions = Object.values(habit.completions);
-    if (completions.length === 0) return 0;
-    const completed = completions.filter(Boolean).length;
-    return Math.round((completed / completions.length) * 100);
-  };
+ const getCompletionRate = (habit: Habit): number => {
+  const completions = Object.values(habit.completions);
+  if (completions.length === 0) return 0;
+  const completed = completions.filter(Boolean).length;
+  return Math.round((completed / completions.length) * 100);
+};
 
   const totalHabits = habits.length;
   const totalCompletionsToday = habits.filter(habit => 
