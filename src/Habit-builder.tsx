@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Check, X, Calendar, Trash2, Target, Flame } from 'lucide-react';
+import  { useState, useEffect } from 'react';
+import { Plus, Check, Trash2, Target, Flame } from 'lucide-react';
 
 interface Habit {
   id: number;
